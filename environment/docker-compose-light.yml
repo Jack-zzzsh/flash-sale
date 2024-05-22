@@ -8,6 +8,7 @@ volumes:
   prometheus_data: {}
 services:
   mysql:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: mysql
     volumes:
@@ -29,6 +30,7 @@ services:
     - thoughts-beta-network
 
   redis:
+    platform: linux/x86_64
     container_name: redis
     image: redislabs/redismod:latest
     ports:
@@ -36,6 +38,7 @@ services:
     networks:
     - thoughts-beta-network
   redis-commander:
+    platform: linux/x86_64
     container_name: redis-commander
     hostname: redis-commander
     image: rediscommander/redis-commander:latest
@@ -46,6 +49,7 @@ services:
     networks:
     - thoughts-beta-network
   rmqnamesrv:
+    platform: linux/x86_64
     image: apacherocketmq/rocketmq:4.5.0
     container_name: rmqnamesrv
     ports:
@@ -57,6 +61,7 @@ services:
     networks:
     - thoughts-beta-network
   rmqbroker:
+    platform: linux/x86_64
     image: apacherocketmq/rocketmq:4.5.0
     container_name: rmqbroker
     ports:
@@ -76,6 +81,7 @@ services:
     - thoughts-beta-network
 
   elasticsearch:
+    platform: linux/amd64
     image: elasticsearch:7.14.2
     container_name: elasticsearch
     volumes:
@@ -90,15 +96,15 @@ services:
     - thoughts-beta-network
 
   logstash:
-    image: logstash:7.14.2
+    image: logstash:7.17.21
     container_name: logstash
     volumes:
     - ./config/elk/logstash.yml:/usr/share/logstash/config/logstash.yml
     - ./config/elk/pipeline:/usr/share/logstash/pipeline
     ports:
     - "5044:5044"
-    - "5000:5000/tcp"
-    - "5000:5000/udp"
+    - "5001:5001/tcp"
+    - "5001:5001/udp"
     - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
@@ -108,6 +114,7 @@ services:
     - elasticsearch
 
   kibana:
+    platform: linux/amd64
     image: kibana:7.14.2
     container_name: kibana
     volumes:
@@ -120,7 +127,9 @@ services:
     - elasticsearch
     
   nacos:
-    image: nacos/nacos-server:2.0.3
+#    专门下了 m 系列芯片的镜像所以无需指定了
+#    platform: linux/amd64
+    image: zhusaidong/nacos-server-m1:2.0.3
     container_name: nacos-standalone-mysql
     env_file:
     - ./config/nacos/nacos-standlone-mysql.env
